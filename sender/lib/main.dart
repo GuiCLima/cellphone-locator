@@ -1,3 +1,4 @@
+import 'package:emissor/env.dart';
 import 'package:flutter/material.dart';
 import 'package:sms/sms.dart';
 import 'dart:convert';
@@ -36,13 +37,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   final jsonEncoder = const JsonEncoder();
 
-  String gui = '914774847';
-  String herla = '945828115';
-  String fabio = '965748006';
-
-  String txtOne = '';
-  String txtTwo = '';
-  String txtThree = '';
+ 
 
   bool isOn = false;
   IconData _btn = Icons.visibility_off;
@@ -65,24 +60,16 @@ class _MyHomePageState extends State<MyHomePage> {
 
   void _sendMessage(String message) {
     SmsSender sender = SmsSender();
-    String address = gui;
+    String address = receiverNumber;
     sender.sendSms(SmsMessage(address, message));
   }
-
-  // Future<void> _sendLocationX() async{
-  //   for(int i=0; i<5; i++){
-  //     await Future.delayed(const Duration(seconds: 30), (){  
-  //       _sendMessage('{"altitude":790.1000366210938,"longitude":-46.3548875,"latitude":-23.4969023}');
-  //     });
-  //   }
-  // }
 
   Future<void> _smsReceiver() async {
     SmsReceiver receiver = SmsReceiver();
 
     receiver.onSmsReceived.listen((SmsMessage msg) {
       var messageData = json.decode(msg.body);
-      if (msg.address == '+5511$gui') {
+      if (msg.address == '+5511$receiverNumber') {
           setState(() {
             _location = Marker(
               markerId: const MarkerId('destination'),

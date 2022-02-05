@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:geolocator_app/env.dart';
 import 'package:sms/sms.dart';
 import 'dart:convert';
 import 'package:screen/screen.dart';
@@ -35,14 +36,8 @@ class _MyHomePageState extends State<MyHomePage> {
   SmsReceiver receiver = SmsReceiver();
   final jsonEncoder = const JsonEncoder();
 
-  String tuan = '966493808';
-  String tuanGranito = '964134681';
-  String gui = '914774847';
-  String herla = '945828115';
-  String fabio = '965748006';
-  String gabi = '992403024';
-  String oncode = '489751';
-  String offcode = '157984'; 
+
+
 
   bool isActive;
 
@@ -77,7 +72,6 @@ class _MyHomePageState extends State<MyHomePage> {
       'longitude' : myPosition.longitude,
       'latitude' : myPosition.latitude,
     };
-    print(locationData);
     return jsonEncoder.convert(locationData);
   }
 
@@ -89,14 +83,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Future<void> _runSmsRoutine() async {
     String position = await _getPosition();
     receiver.onSmsReceived.listen((SmsMessage msg) async{
-      if(msg.address == '+5511$tuanGranito' &&  msg.body == oncode) {
+      if(msg.address == '+5511$senderNumber' &&  msg.body == activationCode) {
         isActive = true;
-        do{
+        while(isActive == true){
           await Future.delayed(const Duration(seconds: 40), () {
-            _sendMessage(position, tuanGranito);
+            _sendMessage(position, senderNumber);
           });
-        } while(isActive == true);
-      } else if(msg.address == '+5511$tuanGranito' &&  msg.body == offcode) {
+        }
+      } else if(msg.address == '+5511$senderNumber' &&  msg.body == deactivationCode) {
         isActive = false;
       }
     });
